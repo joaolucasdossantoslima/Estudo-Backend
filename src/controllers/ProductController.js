@@ -1,6 +1,5 @@
 const { response } = require("express");
 const ProductModel = require("../models/ProductsModel");
-const { update } = require("./UserController");
 
 const ProductController = {
     create(request, response){
@@ -16,7 +15,7 @@ const ProductController = {
 
     async update(request, response){
         let id = request.params.id;
-        ProductModel.updadete(request.body,{
+        ProductModel.update(request.body,{
             where:{
                 id:id
             }
