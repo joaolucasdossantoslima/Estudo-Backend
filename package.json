@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sync": "node src/database/synnc.js",
-    "server":"nodemon src/server.js"
+    "server": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "express": "^4.19.2",
     "mysql2": "^3.11.0",
     "nodemon": "^3.1.4",

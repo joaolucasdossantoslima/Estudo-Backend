@@ -1,27 +1,35 @@
+const { noTrueLogging } = require('sequelize/lib/utils/deprecations');
+const ProductModel = require('../models/ProductsModel');
 const UserModel = require('../models/UserModel')
+const bcrypt = require("bcrypt")
+
 const UserController = {
     async create(request, response) {
-        let messageReturn = ''
 
-        const email = request.body.email
-        const emailReq = await UserModel.findOne({
-            where: { email }
-        });
 
-        if(!request.body.firstname || !request.body.surname || !request.body.email || !request.body.password){
-            messageReturn = 'todos os campos são obrigatorios'
-        }
-        else if (emailReq && emailReq.dataValues.id >0){
-            messageReturn ='Email ja cadastrado'
-        }
-        else{
+        let hash = await bcrypt.hash(require.body.password, 10);
+        request.body.password = hash
+
+       
 
         UserModel.create(request.body);
-        messageReturn = 'Usuario criado com sucesso'
-        }
+        return response.status(201).json({
+            message: 'usuario criado com sucesso'
+                        })
 
-        return response.json({
-            message: messageReturn
+    },
+
+    async login(request,response){
+        let = email = request.body.email
+        let = password = request.body.password
+
+        let user = UserModel.findOne({
+            where: { email }
+        });
+        let hasValid = await bcrypt.compare(password, user.password)
+
+        response.json({
+            message: hasValid
         })
     },
 

@@ -1,7 +1,16 @@
 const { DataTypes } = require("sequelize");
 const connection = require("../database/connection");
-
+const UserModel = require('./UserModel')
 const ProductModel = connection.define("Product", {
+    user_id:{
+        type: DataTypes.INTEGER,
+        allowNull:false,
+        references:{
+            model:UserModel,
+            key:'id'
+        },
+        onDelete: 'Cascade'
+    },
     name: {
         type: DataTypes.STRING(255),
         allowNull: false

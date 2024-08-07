@@ -5,12 +5,15 @@ app.use(express.json());
 
 const UserController = require('./controllers/UserController')
 const ProductController = require('./controllers/ProductController')
+const UserCreateValidation = require('./middleware/UserCreateValidation')
 
 app.get('/products', ProductController.list)
 
 app.get('/users', UserController.list )
 
-app.post('/users', UserController.create)
+app.post('/users', UserCreateValidation, UserController.create)
+
+app.post('/users', UserController.login)
 
 app.post('/products', ProductController.create)
 
