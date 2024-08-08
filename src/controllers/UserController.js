@@ -1,62 +1,89 @@
-const { noTrueLogging } = require('sequelize/lib/utils/deprecations');
-const ProductModel = require('../models/ProductsModel');
-const UserModel = require('../models/UserModel')
-const bcrypt = require("bcrypt")
+const UserModel = require('../models/UserModel');
+const ProductsModel = require('../models/ProductsModel')
+const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const UserController = {
     async create(request, response) {
-
-
-        let hash = await bcrypt.hash(require.body.password, 10);
-        request.body.password = hash
-
-       
+        
+        let hash = await bcrypt.hash(request.body.password, 10);
+        request.body.password = hash;
 
         UserModel.create(request.body);
-        return response.status(201).json({
-            message: 'usuario criado com sucesso'
-                        })
+        messageReturn = 'Usuario criado com sucesso!'
 
-    },
-
-    async login(request,response){
-        let = email = request.body.email
-        let = password = request.body.password
-
-        let user = UserModel.findOne({
-            where: { email }
+        response.status(201);
+        return response.json({
+            message: messageReturn
         });
-        let hasValid = await bcrypt.compare(password, user.password)
+    },
+
+    async login(request, response) {
+        let email = request.body.email;
+        let password = request.body.password
+        let messageCompare = ''
+        let authSecret = 'Sfk802$#djhsa@Sf93s2&(3'
+        if (!email || !password){
+            messageCompare = 'email e password são obrigatórios!'
+        } else {
+
+            let user = await UserModel.findOne({
+                where: { email }
+            });
+            
+            let userPassword = user ? user.password : ''
+            let hasValid = await bcrypt.compare(password, userPassword);
+            // Lógica para criação do token válido por 8h
+            const expiresIn = '8h'
+            const token = hasValid ? jwt.sign({
+                id: user.id, name: user.firstname, email: user.email}, authSecret, {
+                    expiresIn
+                }) : 'Usuário ou senha inválido!'
+            
+            messageCompare = token
+        }
 
         response.json({
-            message: hasValid
+            message: messageCompare
         })
     },
 
-    async list(request,response){
-        const users = await UserModel.findAll()
-        response.json(users)
-    },
-    async update(request,response){
-        let id = request.params.id;
-        UserModel.update(request.body,{
-            where:{
-                id:id
+    async list(request, response) {
+        const users = await UserModel.findAll();
+
+        /*const products = await ProductModel.findAll({
+            where: {
+                user_id: users.id
             }
-        })
-        response.json({
-            message:"Usuario atualizado"
-        })
+        });
+
+        users.setDataValue('products', products);*/
+
+        return response.json(users);
     },
-    
-    async delete(request, response){
+
+    async update(request, response) {
+        let id = request.params.id;
+        
+        UserModel.update(request.body, {
+            where: { id } // id: id
+        });
+
+        return response.json({
+            message: "Usuario atualizado com sucesso"
+        });
+    },
+
+    async delete (request, response) {
         let id = request.params.id;
         UserModel.destroy({
-            where : {id}
+            where: { id }
         });
+
         return response.json({
             message: "Usuario deletado com sucesso"
         })
     }
 }
+
 module.exports = UserController;

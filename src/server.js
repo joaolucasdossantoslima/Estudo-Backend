@@ -13,7 +13,7 @@ app.get('/users', UserController.list )
 
 app.post('/users', UserCreateValidation, UserController.create)
 
-app.post('/users', UserController.login)
+app.post('/login', UserController.login)
 
 app.post('/products', ProductController.create)
 
