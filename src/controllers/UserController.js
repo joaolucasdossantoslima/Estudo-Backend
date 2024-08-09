@@ -22,7 +22,7 @@ const UserController = {
         let email = request.body.email;
         let password = request.body.password
         let messageCompare = ''
-        let authSecret = 'Sfk802$#djhsa@Sf93s2&(3'
+        // let authSecret = 'Sfk802$#djhsa@Sf93s2&(3'
         if (!email || !password){
             messageCompare = 'email e password são obrigatórios!'
         } else {
@@ -36,7 +36,7 @@ const UserController = {
             // Lógica para criação do token válido por 8h
             const expiresIn = '8h'
             const token = hasValid ? jwt.sign({
-                id: user.id, name: user.firstname, email: user.email}, authSecret, {
+                id: user.id, name: user.firstname, email: user.email}, process.env.JWT_SECRET, {
                     expiresIn
                 }) : 'Usuário ou senha inválido!'
             

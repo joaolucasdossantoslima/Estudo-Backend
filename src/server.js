@@ -1,31 +1,40 @@
+const dotenv = require("dotenv")
+dotenv.config();
+
 const express = require('express')
 const app = express();
+
 
 app.use(express.json());
 
 const UserController = require('./controllers/UserController')
 const ProductController = require('./controllers/ProductController')
 const UserCreateValidation = require('./middleware/UserCreateValidation')
+const JwtVerifyToken = require('./middleware/JwtVerifyToken')
+
+const PrivatesRoutes = express.Router();
+
+PrivatesRoutes.use(JwtVerifyToken);
 
 app.get('/products', ProductController.list)
 
 app.get('/users', UserController.list )
 
-app.post('/users', UserCreateValidation, UserController.create)
+.post('/users', UserController.create)
 
 app.post('/login', UserController.login)
 
-app.post('/products', ProductController.create)
+PrivatesRoutes.post('/products', ProductController.create)
 
 app.put('/users/:id', UserController.update)
 
-app.put('/products/:id', ProductController.update)
+PrivatesRoutes.put('/products/:id', ProductController.update)
 
 app.put('/products/:id', UserController.delete)
 
-app.put('/products/:id', ProductController.delete)
+PrivatesRoutes.put('/products/:id', ProductController.delete)
 
-
+app.use(PrivatesRoutes)
 
 app.listen(3000);
 
