@@ -49,17 +49,28 @@ const UserController = {
     },
 
     async list(request, response) {
-        const users = await UserModel.findAll();
-
-        /*const products = await ProductModel.findAll({
-            where: {
-                user_id: users.id
-            }
+        UserModel.hasMany(ProductsModel,{foreignKey:'user_id'})
+        const users = await UserModel.findAll({
+            include:ProductsModel
         });
 
-        users.setDataValue('products', products);*/
+        return response.json(users)
+        // let results = users.map(async(user)=>{
+        //     let products = await ProductsModel.findAll({
+        //         where:{
+        //             user_id: user.id
+        //         }
+        //     })
+        //     return{
+        //         ...user.dataValues,
+        //         products: products,
+        //     }
+        // });
+        // results = await Promise.all(results);
 
-        return response.json(users);
+   
+        // return response.json(results);
+
     },
 
     async update(request, response) {
